@@ -15,6 +15,7 @@ Releases:
 + Blocking queries (simple)
 + Don't expose json11 in headers
 ? build library as shared (default) or static (choosen by option)
+- Suppress all warnings with CURL and Netlib. Probably enable -Werror
 
 - More checks of received JSON data shape (?)
 - Simplify JSON interface (?)
