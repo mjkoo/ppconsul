@@ -77,7 +77,6 @@ namespace ppconsul {
 
         Consul(Consul &&op) PPCONSUL_NOEXCEPT
         : m_client(std::move(op.m_client))
-        , m_addr(std::move(op.m_addr))
         , m_dataCenter(std::move(op.m_dataCenter))
         , m_defaultToken(std::move(op.m_defaultToken))
         {}
@@ -85,7 +84,6 @@ namespace ppconsul {
         Consul& operator= (Consul &&op) PPCONSUL_NOEXCEPT
         {
             m_client = std::move(op.m_client);
-            m_addr = std::move(op.m_addr);
             m_dataCenter = std::move(op.m_dataCenter);
             m_defaultToken = std::move(op.m_defaultToken);
 
@@ -139,7 +137,7 @@ namespace ppconsul {
         std::string makeUrl(const std::string& path, const Params&... params) const
         {
             using namespace keywords;
-            return parameters::makeUrl(m_addr, path, dc = m_dataCenter, token = m_defaultToken, params...);
+            return parameters::makeUrl(path, dc = m_dataCenter, token = m_defaultToken, params...);
         }
 
         // TODO: make impl funcs inline
@@ -148,7 +146,6 @@ namespace ppconsul {
         std::string del_impl(http::Status& status, const std::string& url);
 
         std::unique_ptr<http::impl::Client> m_client;
-        std::string m_addr;
         std::string m_dataCenter;
 
         std::string m_defaultToken;

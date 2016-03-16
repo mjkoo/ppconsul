@@ -15,11 +15,16 @@ namespace ppconsul { namespace netlib {
     class HttpClient: public ppconsul::http::impl::Client
     {
     public:
-        virtual std::tuple<http::Status, ResponseHeaders, std::string> get(const std::string& url) override;
-        virtual std::pair<http::Status, std::string> put(const std::string& url, const std::string& data) override;
-        virtual std::pair<http::Status, std::string> del(const std::string& url) override;
+        HttpClient(const std::string& address);
+
+        virtual std::tuple<http::Status, ResponseHeaders, std::string> get(const std::string& path) override;
+        virtual std::pair<http::Status, std::string> put(const std::string& path, const std::string& data) override;
+        virtual std::pair<http::Status, std::string> del(const std::string& path) override;
 
     private:
+        std::string makeUrl(const std::string& path) const { return m_addr + path; }
+
+        std::string m_addr;
         boost::network::http::client m_client;
     };
 

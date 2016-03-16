@@ -6,6 +6,7 @@
 
 #include "http_client.h"
 #include "../http_helpers.h"
+#include <ppconsul/helpers.h>
 #include <algorithm>
 #include <tuple>
 #include <cassert>
@@ -128,8 +129,9 @@ namespace ppconsul { namespace curl {
         }
     }
 
-    HttpClient::HttpClient()
-    : m_handle(nullptr)
+    HttpClient::HttpClient(const std::string& addr)
+    : m_addr(helpers::makeAddress(addr))
+    , m_handle(nullptr)
     {
         static const CurlInitializer g_initialized;
 
@@ -155,14 +157,14 @@ namespace ppconsul { namespace curl {
             curl_easy_cleanup(m_handle);
     }
 
-    HttpClient::GetResponse HttpClient::get(const std::string& url)
+    HttpClient::GetResponse HttpClient::get(const std::string& path)
     {
         GetResponse r;
         std::get<2>(r).reserve(Buffer_Size);
 
         setopt(CURLOPT_HEADERFUNCTION, &headerCallback);
         setopt(CURLOPT_CUSTOMREQUEST, nullptr);
-        setopt(CURLOPT_URL, url.c_str());
+        setopt(CURLOPT_URL, makeUrl(path).c_str());
         setopt(CURLOPT_WRITEDATA, &std::get<2>(r));
         setopt(CURLOPT_HEADERDATA, &r);
         setopt(CURLOPT_HTTPGET, 1l);
@@ -171,7 +173,7 @@ namespace ppconsul { namespace curl {
         return r;
     }
 
-    std::pair<http::Status, std::string> HttpClient::put(const std::string& url, const std::string& data)
+    std::pair<http::Status, std::string> HttpClient::put(const std::string& path, const std::string& data)
     {
         ReadContext ctx(&data, 0u);
         
@@ -180,7 +182,7 @@ namespace ppconsul { namespace curl {
 
         setopt(CURLOPT_HEADERFUNCTION, &headerStatusCallback);
         setopt(CURLOPT_CUSTOMREQUEST, nullptr);
-        setopt(CURLOPT_URL, url.c_str());
+        setopt(CURLOPT_URL, makeUrl(path).c_str());
         setopt(CURLOPT_WRITEDATA, &r.second);
         setopt(CURLOPT_HEADERDATA, &r.first);
         setopt(CURLOPT_UPLOAD, 1l);
@@ -192,13 +194,13 @@ namespace ppconsul { namespace curl {
         return r;
     }
 
-    std::pair<http::Status, std::string> HttpClient::del(const std::string& url)
+    std::pair<http::Status, std::string> HttpClient::del(const std::string& path)
     {
         std::pair<http::Status, std::string> r;
         r.second.reserve(Buffer_Size);
 
         setopt(CURLOPT_HEADERFUNCTION, &headerStatusCallback);
-        setopt(CURLOPT_URL, url.c_str());
+        setopt(CURLOPT_URL, makeUrl(path).c_str());
         setopt(CURLOPT_WRITEDATA, &r.second);
         setopt(CURLOPT_HEADERDATA, &r.first);
         setopt(CURLOPT_HTTPGET, 1l);
