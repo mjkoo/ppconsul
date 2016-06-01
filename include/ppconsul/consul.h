@@ -51,6 +51,33 @@ namespace ppconsul {
 
     const char Default_Server_Address[] = "127.0.0.1:8500";
 
+    struct TlsSettings
+    {
+        // Params are c-strings because it's easiest way to allow user to store
+        // the sensitive data somehow specially (e.g. locked and shreded after use memory).
+        // User stores it in its way and give us only a pointer. And it's also compatible with cURL :)
+
+        // More details about security options https://curl.haxx.se/libcurl/c/curl_easy_setopt.html
+
+        // Note that Consul 0.1 supports only PKCS#12 and PEM format certificates
+        // TODO: Check what's really supported on OSX?
+
+        // Path or name of the client certificate file (CURLOPT_SSLCERT)
+        const char *clientCert = nullptr;
+        // Path or name of the client private key (CURLOPT_SSLKEY)
+        const char *clientKey = nullptr;
+        // Password for the client's private key or certificate file (CURLOPT_KEYPASSWD)
+        const char *clientKeyPassword = nullptr;
+
+        // Path to CA certificate bundle or dir or whatever -> need to be checked on osx/lnx/win!
+        // (CURLOPT_CAINFO and/or CURLOPT_CAPATH???)
+        const char *caCert = nullptr;
+
+        // always set CURLOPT_SSL_FALSESTART to 1, ignore error
+        // ?always set CURL_SSLVERSION_DEFAULT to CURL_SSLVERSION_TLSv1_1 or 1_2 (check what Consul supports)
+        // ?always set CURLOPT_SSL_VERIFYSTATUS to 1, ignore error
+    };
+
     class Consul
     {
     public:

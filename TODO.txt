@@ -15,7 +15,8 @@ Releases:
 + Blocking queries (simple)
 + Don't expose json11 in headers
 ? build library as shared (default) or static (choosen by option)
-- Suppress all warnings with CURL and Netlib. Probably enable -Werror
+- Suppress all warnings (Netlib!). Probably enable -Werror
+- Add async API (cURL multi handle?) (postponed to 0.2)
 
 - More checks of received JSON data shape (?)
 - Simplify JSON interface (?)
@@ -25,19 +26,27 @@ Releases:
 - Support 64bit integers in JSON (postponed to 0.2)
 - tests for consistency / default consistency (if possible)
 
+### HTTP(S)
+- Support HTTP Pipelining (extremely important for HTTPS) (postponed to 0.2 because requires to switch to cURL multi handle API)
+? allow user to set CURLOPT_SSLENGINE and CURLOPT_SSLENGINE_DEFAULT (consul 0.2)
+? allow user to set CURLOPT_SSL_CIPHER_LIST
+    or set it by ourself to something highly secure (check what Consul supports) (consul 0.2)
+? allow user to set CURLOPT_ISSUERCERT (consul 0.2)
+? allow user to set CURLOPT_PINNEDPUBLICKEY (consul 0.2)
+? allow user to set CURLOPT_CRLFILE (consul 0.2)
+? allow user to set some other HTTP(S) options supported by cURL
+? use Consul::setOption() instead of adding all of this to TlsOptions?
 
 ### CI
 
 + build for 3 platforms (Windows, Linux, OSX)
 + run unit-tests
-+ run integration tests (-Windows, +Linux , +OSX)
-- operator << for std::duration for tests
-- split consul tests into different executables
++ run integration tests (+Windows, +Linux , +OSX)
++ operator << for std::duration for tests
++ split consul tests into different executables
 
 ### Consul
-- Change 'block-for' resolution from seconds to milliseconds
-
-+ Use milliseconds instead of seconds as base units for blocking queries
++ Change 'block-for' resolution from seconds to milliseconds
 - tests for default DC and default token (postponed to 0.2)
 
 
