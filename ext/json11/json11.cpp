@@ -24,6 +24,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstdio>
+#include <functional>
 #include <limits>
 
 
@@ -144,6 +145,18 @@ void Json::dump(string &out) const {
  * Value wrappers
  */
 
+template<typename T>
+bool less_(const T& lhs, const T& rhs)
+{
+    return lhs < rhs;
+}
+
+template<>
+bool less_<std::nullptr_t>(const std::nullptr_t& lhs, const std::nullptr_t& rhs)
+{
+    return false;
+}
+
 template <Json::Type tag, typename T>
 class Value : public JsonValue {
 protected:
@@ -162,7 +175,7 @@ protected:
         return m_value == static_cast<const Value<tag, T> *>(other)->m_value;
     }
     bool less(const JsonValue * other) const override {
-        return m_value < static_cast<const Value<tag, T> *>(other)->m_value;
+        return less_(m_value, static_cast<const Value<tag, T> *>(other)->m_value);
     }
 
     const T m_value;
