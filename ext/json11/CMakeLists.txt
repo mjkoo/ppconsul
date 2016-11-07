@@ -7,3 +7,9 @@
 project(json11)
 
 add_library(${PROJECT_NAME} json11.hpp json11.cpp)
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)

@@ -63,3 +63,9 @@ add_library(${PROJECT_NAME}
 
 source_group(ppconsul FILES ${SOURCES})
 source_group(libb64 FILES ${LIBB64_SOURCES})
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
